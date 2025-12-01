@@ -1,0 +1,264 @@
+.dashboard {
+    display: flex;
+    justify-content: space-around;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    margin: auto;
+    margin-bottom: 20px;
+    margin-top: 4%;
+    color: #37474F;
+    font-weight: bold;
+}
+
+.stat {
+    text-align: center;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 8rem;
+    flex-wrap: wrap;
+    align-content: center;
+}
+span img{
+    width: 35px; 
+    margin-right: 10%;
+}
+.stat span {
+    font-size: 24px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.dashboard-stats-1 {
+    background: #E0E7FF;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.dashboard-stats-1 span {
+    color: #1E3A8A;
+}
+
+.dashboard-stats-2 {
+    background: #D7E3FC;
+}
+
+.dashboard-stats-2 span {
+    color: #000000;
+}
+
+.dashboard-stats-3 {
+    background: #D1FAE5;
+}
+
+.dashboard-stats-3 span {
+    color: #065F46;
+}
+
+.dashboard-stats-4 {
+    background: #FDE68A;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.dashboard-stats-4 span {
+    color: #7C5600;
+}
+
+table {
+    width: 80%;
+    background: white;
+    border-collapse: collapse;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    margin-top: 2rem;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background: #f8f8f8;
+    text-align: center;
+}
+
+.analysis-button {
+    background: #007bff;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.profile-img {
+    height: 13rem;
+    border-radius: 50%;
+    border: 3px solid #000;
+}
+
+.create-exam-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+.copyBtn {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease, transform 0.2s ease !important;
+}
+
+.copyBtn:hover {
+    background-color: #c82333 !important;
+    transform: scale(1.05) !important;
+}
+
+.copyBtn:focus {
+    outline: none !important;
+}
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+.search-input {
+    border-radius: 25px;
+    height: 3rem;
+    padding: 0 20px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+.search-button {
+    height: 3rem;
+    border-radius: 25px;
+    padding: 0 20px;
+    font-size: 1rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+.search-button:hover {
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+.exam-card {
+    border-radius: 10px;
+    padding: 15px;
+    background: white;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    display: none; /* Initially hidden */
+}
+.exam-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.exam-details {
+    text-align: right;
+    font-size: 0.9rem;
+    color: gray;
+}
+
+#examSearchForm {
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap;
+}
+#examNoticeLink{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+
+/*  */
+
+@media screen and (max-width: 480px) {
+    .dashboard {
+        flex-direction: column; /* Stack items vertically */
+        width: 95%;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2%;
+    }
+
+    .stat {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+    }
+
+    .stat span {
+        font-size: 20px;
+    }
+
+    span img {
+        width: 30px;
+        margin-right: 5%;
+    }
+
+    .dashboard-stats-1, 
+    .dashboard-stats-2, 
+    .dashboard-stats-3, 
+    .dashboard-stats-4 {
+        border-radius: 10px;
+        width: 20rem;
+        margin-top: 1rem;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        font-size: 14px;
+        margin-bottom: 1rem;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    .profile-img {
+        height: 10rem;
+    }
+
+    .search-input {
+        width: 90%;
+        max-width: none;
+    }
+
+    .exam-card {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    #examNoticeLink {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

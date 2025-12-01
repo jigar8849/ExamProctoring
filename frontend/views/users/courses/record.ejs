@@ -1,0 +1,367 @@
+<div class="recording-container">
+  <!-- Toolbar (always on top) -->
+  <div class="controls-toolbar text-center">
+    <div class="btn-group" role="group" aria-label="Media and Canvas Tools">
+      <button id="toggleCameraBtn" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-video"></i> Camera
+      </button>
+      <button id="toggleMicrophoneBtn" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-microphone"></i> Mic
+      </button>
+      <button id="penToolBtn" class="btn btn-outline-secondary active">
+        <i class="fa-solid fa-pen"></i> Pen
+      </button>
+      <button id="textToolBtn" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-font"></i> Text
+      </button>
+      <button id="clearCanvasBtn" class="btn btn-outline-danger">
+        <i class="fa-solid fa-trash"></i> Clear
+      </button>
+    </div>
+  </div>
+
+  <div class="canvas-container">
+    <canvas id="drawingCanvas"></canvas>
+    <canvas id="compositeCanvas" style="position:absolute; top:0; left:0; opacity:0; pointer-events:none;"></canvas>
+  </div>
+
+  <div class="controls">
+    <button id="startRecording" class="btn btn-primary" disabled>Start Recording</button>
+    <button id="stopRecording" class="btn btn-danger" disabled>Stop Recording</button>
+  </div>
+
+  <div class="camera-preview">
+    <video id="cameraFeed" autoplay muted></video>
+  </div>
+
+  <video id="screenVideo" style="display:none;" autoplay muted></video>
+  <video id="cameraVideo" style="display:none;" autoplay muted></video>
+</div>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .recording-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .controls-toolbar {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+  }
+  .controls-toolbar .btn {
+    margin: 0 5px;
+  }
+
+  .canvas-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+  }
+  #drawingCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+  }
+  #compositeCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+  }
+
+  .camera-preview {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+    height: 150px;
+    border: 2px solid #ccc;
+    background-color: #000;
+    z-index: 2000;
+  }
+  #cameraFeed {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+    .canvas-text-input {
+    position: absolute;
+    z-index: 3000;
+    border: 1px solid #ccc;
+    font-size: 20px;
+    padding: 2px 4px;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const drawingCanvas = document.getElementById('drawingCanvas');
+    const compositeCanvas = document.getElementById('compositeCanvas');
+    const canvasContainer = document.querySelector('.canvas-container');
+    
+    function resizeCanvases() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      drawingCanvas.width = width;
+      drawingCanvas.height = height;
+      compositeCanvas.width = width;
+      compositeCanvas.height = height;
+    }
+    resizeCanvases();
+    window.addEventListener('resize', resizeCanvases);
+  
+    const drawingCtx = drawingCanvas.getContext('2d');
+  
+    const startBtn = document.getElementById('startRecording');
+    const stopBtn = document.getElementById('stopRecording');
+    const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+    const toggleMicrophoneBtn = document.getElementById('toggleMicrophoneBtn');
+    const penToolBtn = document.getElementById('penToolBtn');
+    const textToolBtn = document.getElementById('textToolBtn');
+    const clearCanvasBtn = document.getElementById('clearCanvasBtn');
+      const cameraFeed = document.getElementById('cameraFeed');
+    const screenVideo = document.getElementById('screenVideo');
+    const cameraVideo = document.getElementById('cameraVideo');
+    const compositeCtx = compositeCanvas.getContext('2d');
+  
+    let mediaStream;
+    let mediaRecorder;
+    let recordedChunks = [];
+    let drawingMode = 'pen'; 
+    let isDrawing = false;
+    let compositeInterval; 
+  
+    try {
+      mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      });
+      cameraFeed.srcObject = mediaStream;
+      startBtn.disabled = false;
+    } catch (error) {
+      alert('Error accessing media devices: ' + error.message);
+      return;
+    }
+  
+    toggleCameraBtn.addEventListener('click', () => {
+      mediaStream.getVideoTracks().forEach(track => {
+        track.enabled = !track.enabled;
+      });
+      const anyEnabled = mediaStream.getVideoTracks().some(track => track.enabled);
+      toggleCameraBtn.innerHTML = anyEnabled
+        ? '<i class="fa-solid fa-video"></i> Camera'
+        : '<i class="fa-solid fa-video-slash"></i> Camera';
+    });
+  
+    toggleMicrophoneBtn.addEventListener('click', () => {
+      mediaStream.getAudioTracks().forEach(track => {
+        track.enabled = !track.enabled;
+      });
+      const anyEnabled = mediaStream.getAudioTracks().some(track => track.enabled);
+      toggleMicrophoneBtn.innerHTML = anyEnabled
+        ? '<i class="fa-solid fa-microphone"></i> Mic'
+        : '<i class="fa-solid fa-microphone-slash"></i> Mic';
+    });
+  
+    penToolBtn.addEventListener('click', () => {
+      drawingMode = 'pen';
+      penToolBtn.classList.add('active');
+      textToolBtn.classList.remove('active');
+    });
+  
+    textToolBtn.addEventListener('click', () => {
+      drawingMode = 'text';
+      textToolBtn.classList.add('active');
+      penToolBtn.classList.remove('active');
+    });
+  
+    clearCanvasBtn.addEventListener('click', () => {
+      drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+    });
+  
+    drawingCanvas.addEventListener('mousedown', (event) => {
+      if (drawingMode === 'pen') {
+        isDrawing = true;
+        drawingCtx.beginPath();
+        drawingCtx.moveTo(event.offsetX, event.offsetY);
+      } else if (drawingMode === 'text') {
+        event.preventDefault(); // Prevent multiple triggers
+        const rect = drawingCanvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        createTextInput(x, y);
+      }
+    });
+  
+    drawingCanvas.addEventListener('mousemove', (event) => {
+      if (isDrawing && drawingMode === 'pen') {
+        drawingCtx.lineWidth = 5;
+        drawingCtx.lineCap = 'round';
+        drawingCtx.strokeStyle = '#000';
+        drawingCtx.lineTo(event.offsetX, event.offsetY);
+        drawingCtx.stroke();
+      }
+    });
+  
+    drawingCanvas.addEventListener('mouseup', () => {
+      if (drawingMode === 'pen') {
+        isDrawing = false;
+        drawingCtx.beginPath();
+      }
+    });
+  
+    function createTextInput(x, y) {
+      const existingInput = canvasContainer.querySelector('.canvas-text-input');
+      if (existingInput) {
+        existingInput.remove();
+      }
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Type here...';
+      input.className = 'canvas-text-input';
+      input.style.left = x + 'px';
+      input.style.top = y + 'px';
+      canvasContainer.appendChild(input);
+      input.focus();
+  
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        const text = input.value;
+        if (text) {
+          drawingCtx.font = '20px Arial';
+          drawingCtx.fillStyle = '#000';
+          drawingCtx.fillText(text, x, y + 20);
+        }
+        if (canvasContainer.contains(input)) {
+          canvasContainer.removeChild(input);
+        }
+      }
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') finish();
+      });
+      input.addEventListener('blur', finish);
+    }
+  
+    startBtn.addEventListener('click', async () => {
+      try {
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: { cursor: "always" },
+          audio: false  
+        });
+        screenVideo.srcObject = screenStream;
+        cameraVideo.srcObject = mediaStream;
+  
+        await Promise.all([ 
+          new Promise(resolve => { 
+            screenVideo.onloadedmetadata = () => { 
+              screenVideo.play(); 
+              compositeCanvas.width = screenVideo.videoWidth; 
+              compositeCanvas.height = screenVideo.videoHeight; 
+              resolve(); 
+            }; 
+          }), 
+          new Promise(resolve => { 
+            cameraVideo.onloadedmetadata = () => { 
+              cameraVideo.play(); 
+              resolve(); 
+            }; 
+          })
+        ]);
+  
+        const overlayWidth = 200;
+        const overlayHeight = 150;
+  
+        compositeInterval = setInterval(() => {
+          compositeCtx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+          compositeCtx.drawImage(screenVideo, 0, 0, compositeCanvas.width, compositeCanvas.height);
+          compositeCtx.drawImage(
+            cameraVideo,
+            compositeCanvas.width - overlayWidth - 10,
+            compositeCanvas.height - overlayHeight - 10,
+            overlayWidth,
+            overlayHeight
+          );
+          compositeCtx.drawImage(drawingCanvas, 0, 0, compositeCanvas.width, compositeCanvas.height);
+        }, 33); 
+  
+        const compositeStream = compositeCanvas.captureStream(30);
+        const audioTracks = mediaStream.getAudioTracks();
+        if (audioTracks.length > 0) {
+          compositeStream.addTrack(audioTracks[0]);
+        }
+  
+        mediaRecorder = new MediaRecorder(compositeStream, {
+          mimeType: 'video/webm; codecs=vp9'
+        });
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+        mediaRecorder.onstop = async () => {
+          clearInterval(compositeInterval);
+          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          const file = new File([blob], "recording.webm", { type: blob.type });
+          const formData = new FormData();
+          formData.append("video", file);
+          try {
+            const res = await fetch(window.location.pathname, {
+              method: 'POST',
+              body: formData,
+            });
+            if (res.redirected) {
+              window.location.href = res.url;
+            } else {
+              const data = await res.json();
+              if (data.success) {
+                alert("Video uploaded successfully: " + data.url);
+                window.location.href = "/courses/dashboard";
+              } else {
+                alert("Upload failed: " + data.message);
+              }
+            }
+          } catch (err) {
+            alert("Upload error: " + err.message);
+          }
+          recordedChunks = [];
+        };
+  
+        mediaRecorder.start();
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+      } catch (error) {
+        alert('Error starting recording: ' + error.message);
+      }
+    });
+  
+    stopBtn.addEventListener('click', () => {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+    });
+  });
+</script>

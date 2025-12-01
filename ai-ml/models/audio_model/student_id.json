@@ -1,0 +1,62 @@
+{
+    "students": {
+        "581": {
+            "name": "Jigar",
+            "operations": [
+                "register",
+                "validate"
+            ],
+            "register_audio_path": "C:/Users/Admin/Desktop/aiml_v2/sample_1/sample_audio1.wav",
+            "validate_audio_path": "C:/Users/Admin/Desktop/aiml_v2/sample_1/sample_audio1.wav"
+        }
+    },
+    "results": {
+        "581": {
+            "student_id": "581",
+            "name": "Jigar",
+            "timestamp": "2025-01-22T06:11:21.820085",
+            "registration": {
+                "audio_path": "C:/Users/Admin/Desktop/aiml_v2/sample_1/sample_audio1.wav",
+                "features": {
+                    "voice_metrics": {
+                        "strength": 2.8688013553619385,
+                        "clarity": 19.358182321684176,
+                        "pitch_stability": 644.394287109375
+                    },
+                    "noise_metrics": {
+                        "background_level": 0.028884875046382808,
+                        "signal_to_noise_ratio": 37.789235631304386,
+                        "disturbance_level": 0.9116168022155762
+                    }
+                },
+                "processed_at": "2025-01-22T06:11:25.099221"
+            },
+            "validation": {
+                "audio_path": "C:/Users/Admin/Desktop/aiml_v2/sample_1/sample_audio1.wav",
+                "features": {
+                    "voice_metrics": {
+                        "strength": 2.8688013553619385,
+                        "clarity": 19.358182321684176,
+                        "pitch_stability": 644.394287109375
+                    },
+                    "noise_metrics": {
+                        "background_level": 0.028884875046382808,
+                        "signal_to_noise_ratio": 37.789235631304386,
+                        "disturbance_level": 0.9116168022155762
+                    }
+                },
+                "processed_at": "2025-01-22T06:11:25.410481"
+            },
+            "comparison": {
+                "match": true,
+                "confidence": 1.0,
+                "details": {
+                    "voice_similarity": 1.0,
+                    "clarity_similarity": 1.0,
+                    "pitch_similarity": 1.0
+                },
+                "compared_at": "2025-01-22T06:11:25.410481"
+            }
+        }
+    }
+}

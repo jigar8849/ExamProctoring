@@ -1,0 +1,220 @@
+/* General Reset */
+* {
+    font-family: "Asap", serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #E5E5E5 !important;
+}
+img{
+    user-select: none;
+    -webkit-user-drag: none;
+}
+.z-index-2{
+    z-index: 2;
+    top: 5rem;
+}
+
+/* Styling for Button */
+.btn {
+    background-color: #2F80ED !important;
+    border: none !important;
+    padding: 10px 20px;
+    /* Ensure buttons have consistent padding */
+    border-radius: 5px;
+}
+
+.profile-photo {
+    width: 100%;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.examinee-photo {
+    display: none;
+}
+
+.user-camera {
+    width: 1.6rem;
+}
+
+.camera-icon {
+    border: 2px solid #2F80ED;
+    background-color: white;
+    height: 2.7rem;
+    width: 3rem;
+    border-radius: 50%;
+    /* margin-top: 6rem; */
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.examiner-photo {
+    display: none;
+}
+
+.text-primary {
+    --bs-text-opacity: 1;
+    color: #EB5757 1 !important;
+}
+
+.btn-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* smooth transition for transform and shadow */
+}
+
+.btn-warning:hover,
+.btn-danger:hover,
+.btn-outline-dark:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Adjustments for Buttons in the Listing Details */
+.d-flex .btn {
+    margin-bottom: 0.5rem;
+    /* Reduced bottom margin to align better */
+}
+
+/* Review Card */
+.review-card {
+    border: 1px solid #b39da2 !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Reviews Section */
+.reviews-section {
+    background-color: #f9f9f9;
+    padding: 40px 15px;
+    border-radius: 8px;
+}
+
+.review-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 1.1rem;
+}
+
+.card-text {
+    font-size: 1rem;
+}
+
+.rating .text-warning {
+    color: #ffbf00;
+    /* Star color */
+}
+
+.comment {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.mb-3 {
+    margin-bottom: 1rem !important;
+}
+
+form button {
+    /* margin-top: 1rem; */
+    /* Space between comment and button */
+}
+
+.form-control {
+    width: 100%;
+}
+
+.common-space {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.ml {
+    margin-left: 8rem;
+    margin-top: 1.5rem;
+}
+
+.btn-danger {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.copyBtn {
+    background-color: #f8f9fa !important;
+    border: 1px solid black !important;
+    font-weight: bold !important;
+}
+
+.camera-div {
+    height: 100%;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.retake {
+    color: blue;
+    text-decoration: underline;
+    position: absolute;
+    right: 2rem;
+    cursor: pointer;
+}
+
+#camera-preview {
+    bottom: 3rem;
+    right: 15px;
+    margin: auto;
+    height: 15rem;
+    display: none;
+    text-align: center;
+    background: white;
+    border-radius: 15px;
+    padding: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+#camera-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .review-card {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .review-card {
+        margin-bottom: 1.5rem;
+    }
+}

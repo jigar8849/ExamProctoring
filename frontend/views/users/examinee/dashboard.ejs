@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= user.username.toUpperCase() %>'s Dashboard - Terzettoo</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <div class="alert alert-success alert-dismissible fade show col-6 offset-3 z-index-2 position-fixed" role="alert"
+       id="success-alert" style="display: none;">
+      Exam ID copied to clipboard!
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+  <div class="container">
+    <div class="dashboard-header">
+      <h3 class="dashboard-title text-muted text-center text-decoration-underline fw-bold">Dashboard</h3>
+    </div>
+
+    <div class="dashboard">
+      <div class="stat dashboard-stats-1">
+        <span>
+          <img src="/images/TotalExamsAttempted.png" alt="">
+          <%= stats.totalExamsAttempted %>
+        </span><br>
+        Total Exams Attempted
+      </div>
+      <div class="stat dashboard-stats-2">
+        <span>
+          <img src="/images/calender.png" alt="">
+          <% if (stats.lastAttemptDate !== "N/A") { %>
+            <%= new Date(stats.lastAttemptDate).toLocaleDateString() %>
+          <% } else { %>
+            N/A
+          <% } %>
+        </span><br>
+        Last Attempt Date
+      </div>
+      <div class="stat dashboard-stats-3">
+        <span>
+          <img src="/images/Trophy.png" alt="">
+          <% if (stats.lastAttemptScore !== "N/A") { %>
+            <%= stats.lastAttemptScore %>/100
+          <% } else { %>
+            N/A
+          <% } %>
+        </span><br>
+        Last Attempt Score
+      </div>
+      <div class="stat dashboard-stats-4">
+        <span>
+          <img src="/images/Top_performer.png" alt="">
+          <% if (stats.bestPerformance !== "N/A") { %>
+            <%= stats.bestPerformance %>%
+          <% } else { %>
+            N/A
+          <% } %>
+        </span><br>
+        Best Performance
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="search-bar">
+      <form id="examSearchForm" class="d-flex" style="width: 100%; max-width: 500px; gap: 0.5rem;">
+        <input type="text" id="examIdInput" name="examId" placeholder="Enter Exam ID" class="search-input">
+        <button type="submit" class="search-button">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+    </div>
+
+    <div id="examCard" class="exam-card" style="display: none;">
+      <a href="" id="examNoticeLink" style="text-decoration: none; color: inherit;">
+        <div>
+          <div id="examTitle" class="exam-title"></div>
+          <div id="examInstructor"></div>
+        </div>
+        <div class="exam-details">
+          <div><strong>Starts at: <span id="examStartTime"></span></strong></div>
+          <div>Duration: <span id="examDuration"></span></div>
+        </div>
+      </a>
+    </div>
+    <hr>
+
+    <h2 class="text-center my-4 fw-bold text-muted text-decoration-underline">Exam Analysis</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>DATE</th>
+          <th>TIME</th>
+          <th>NAME</th>
+          <th>SCORE</th>
+          <th>SPAN</th>
+          <th>REPORT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (user && user.examHistory && user.examHistory.length > 0) { %>
+          <% user.examHistory.forEach(function(submission) { 
+               // Format the submission date and time
+               const submissionDate = new Date(submission.submissionTime);
+               const dateString = submissionDate.toLocaleDateString();
+               const timeString = submissionDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+               
+               // Calculate the number of correct answers
+               let correctCount = 0;
+               (submission.answers || []).forEach(function(answer) {
+                 const submitted = answer.submittedAnswer ? answer.submittedAnswer.trim().toLowerCase() : "";
+                 const correct   = answer.correctAnswer ? answer.correctAnswer.trim().toLowerCase() : "";
+                 if (submitted === correct) {
+                   correctCount++;
+                 }
+               });
+               const totalQuestions = (submission.answers || []).length;
+               const score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+               
+               // Get exam details from the populated examId
+               const examName = (submission.examId && submission.examId.examName) ? submission.examId.examName : "Unknown Exam";
+               const examDuration = (submission.examId && submission.examId.duration) ? submission.examId.duration : "N/A";
+          %>
+            <tr>
+              <td><%= dateString %></td>
+              <td><%= timeString %></td>
+              <td><%= examName %></td>
+              <td><%= score %>/100</td>
+              <td><%= examDuration %> M</td>
+              <td>
+                <!-- Analysis link -->
+                <a href="/examinee/exams/<%= submission.examId ? submission.examId._id : '' %>/analysis/<%= submission._id %>" class="analysis-button">
+                  ANALYSIS
+                </a>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" class="text-center">No exam history available.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Copy-to-Clipboard & Exam Search Scripts -->
+  <script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const alertDiv = document.getElementById('success-alert');
+        alertDiv.style.display = 'block';
+        setTimeout(() => {
+          alertDiv.style.display = 'none';
+        }, 3000);
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+      });
+    }
+
+    document.getElementById("examSearchForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const examId = document.getElementById("examIdInput").value.trim();
+      if (examId === "") {
+          alert("Please enter an Exam ID");
+          return;
+      }
+      fetch(`/examinee/dashboard?examId=${examId}`)
+          .then(response => response.text())
+          .then(text => {
+              console.log("Raw Response:", text);
+              let data;
+              try {
+                  data = JSON.parse(text);
+              } catch (error) {
+                  throw new Error("Invalid JSON Response");
+              }
+              if (data.success) {
+                  console.log("Exam Data:", data.exam);
+                  document.getElementById("examTitle").textContent = data.exam.name;
+                  document.getElementById("examInstructor").textContent = `By: ${data.exam.instructor}`;
+                  document.getElementById("examStartTime").textContent = data.exam.startTime;
+                  document.getElementById("examDuration").textContent = `${data.exam.duration} Minutes`;
+                  const noticeLink = document.getElementById("examNoticeLink");
+                  noticeLink.href = `/examinee/exams/${examId}/notice`;
+                  document.getElementById("examCard").style.display = "flex";
+              } else {
+                  alert("Exam not found!");
+                  document.getElementById("examCard").style.display = "none";
+              }
+          })
+          .catch(error => {
+              console.error("Error fetching exam data:", error);
+              alert("Something went wrong. Please try again.");
+          });
+    });
+  </script>
+</body>
+</html>

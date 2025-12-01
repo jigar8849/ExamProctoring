@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Completed - Terzettoo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #28a745;
+    }
+    p {
+      line-height: 1.6;
+    }
+    .summary, .metrics, .behavior {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #e9f7ef;
+      border-left: 5px solid #28a745;
+      border-radius: 4px;
+    }
+    .metrics, .behavior {
+      background-color: #f8f9fa;
+      border-left: 5px solid #007bff;
+    }
+    .metrics table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .metrics table th, .metrics table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    .metrics table th {
+      background-color: #007bff;
+      color: white;
+    }
+    .behavior p {
+      font-weight: bold;
+      color: #333;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Exam Completed</h1>
+    <div class="summary">
+      <p>Thank you, <b><%= user.name %></b>, for completing the exam: <b><%= exam.title %></b>.</p>
+      <p><b>Submission Time:</b> <%= new Date(submission.submissionTime).toLocaleString() %></p>
+    </div>
+
+    <div class="metrics">
+      <h2>Activity Metrics</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Face Activity Percentage</td>
+            <td><%= activityMetrics.activity_metrics.face_activity_percentage %> %</td>
+          </tr>
+          <tr>
+            <td>Body Activity Percentage</td>
+            <td><%= activityMetrics.activity_metrics.body_activity_percentage %> %</td>
+          </tr>
+          <tr>
+            <td>Eye Activity Percentage</td>
+            <td><%= activityMetrics.activity_metrics.eye_activity_percentage %> %</td>
+          </tr>
+          <tr>
+            <td>Blink Rate</td>
+            <td><%= activityMetrics.activity_metrics.blink_rate %></td>
+          </tr>
+          <tr>
+            <td>Overall Activity Score</td>
+            <td><%= activityMetrics.activity_metrics.overall_activity_score %></td>
+          </tr>
+        </tbody>
+      </table>      
+    </div>
+
+    <div class="behavior">
+      <h2>User Behavior Analysis</h2>
+      <% if (activityMetrics.activity_metrics.overall_activity_score > 50 || activityMetrics.activity_metrics.body_activity_percentage > 10) { %>
+        <p style="color: red;">Behavior Analysis: <b>Abnormal behavior detected! Possible cheating attempt.</b></p>
+      <% } else { %>
+        <p style="color: green;">Behavior Analysis: <b>Normal behavior observed.</b></p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© <%= new Date().getFullYear() %> Exam Portal. All rights reserved.</p>
+  </div>
+</body>
+</html>

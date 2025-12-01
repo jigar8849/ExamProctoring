@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Available Courses</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6b+F+J38kBe+Y9HaJ5X0f3ddfKhVVV4ZlFz4YFv1E2M4iP+r47zDXX0KHQw" crossorigin="anonymous">
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h2>Search for Courses</h2>
+    <form action="/examinee/courses" method="get">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" name="search" placeholder="Search for a course" value="<%= searchQuery %>">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+    </form>
+
+    <% if (flash && flash.error && flash.error.length > 0) { %>
+      <div class="alert alert-danger">
+        <%= flash.error %>
+      </div>
+    <% } %>
+
+    <% if (flash && flash.success && flash.success.length > 0) { %>
+      <div class="alert alert-success">
+        <%= flash.success %>
+      </div>
+    <% } %>
+
+    <h3>Your Added Courses</h3>
+    <% if (addedCourses.length > 0) { %>
+      <div class="row">
+        <% addedCourses.forEach(course => { %>
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"><%= course.courseName %></h5>
+                <p class="card-text"><%= course.courseDescription %></p>
+                <!-- View Course Button -->
+                <a href="/examinee/course/<%= course._id %>" class="btn btn-secondary">View Course</a>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <p>You haven't added any courses yet.</p>
+    <% } %>
+
+    <% if (searchQuery) { %>
+      <h3>Search Results for "<%= searchQuery %>"</h3>
+    <% } %>
+
+    <% if (courses.length > 0) { %>
+      
+    <% } else { %>
+      <p>No courses found matching your search.</p>
+    <% } %>
+
+  </div>
+
+</body>
+</html>

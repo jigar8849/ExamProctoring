@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Results - Terzettoo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 2rem;
+    }
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Exam Results</h1>
+    <p><strong>Correct Answers:</strong> <%= submission.correctCount %></p>
+    <p><strong>Incorrect Answers:</strong> <%= submission.incorrectCount %></p>
+    <canvas id="resultsChart"></canvas>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const correctAnswers = <%= submission.correctCount %>;
+      const incorrectAnswers = <%= submission.incorrectCount %>;
+
+      const ctx = document.getElementById('resultsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Correct', 'Incorrect'],
+          datasets: [{
+            data: [correctAnswers, incorrectAnswers],
+            backgroundColor: ['#28a745', '#dc3545'],
+          }],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+          },
+        },
+      });
+    });
+  </script>
+</body>
+</html>

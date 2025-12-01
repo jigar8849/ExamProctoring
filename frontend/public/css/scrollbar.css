@@ -1,0 +1,50 @@
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+  background: #e1ebed;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #00000095;
+}
+
+/* Hover area to show scrollbar */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  z-index: 1000;
+  cursor: default;
+}
+
+/* Hide scrollbar initially */
+body:not(:hover) ::-webkit-scrollbar {
+  opacity: 0;
+}
+
+/* Show scrollbar on hover */
+body:hover ::-webkit-scrollbar {
+  opacity: 1;
+}
+
+html {
+  scroll-behavior: smooth;
+}

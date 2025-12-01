@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Course</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dynamic-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .remove-btn {
+            float: right;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container">
+        <div class="">
+            <div class="card-header text-center text-muted fw-bold">
+                <h4 class="mb-0">Create New Course</h4>
+            </div>
+            <div class="card-body">
+                <form action="/examiner/create-course" method="POST">
+                    <!-- Course Basic Info -->
+                    <div class="mb-3">
+                        <label for="courseName" class="form-label">Course Name</label>
+                        <input type="text" class="form-control" id="courseName" name="courseName" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="courseDescription" class="form-label">Course Description</label>
+                        <textarea class="form-control" id="courseDescription" name="courseDescription" rows="3"
+                            required></textarea>
+                    </div>
+
+                    <div id="subjects-section">
+                        <div class="dynamic-section subject-section">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5>Subject 1</h5>
+                                <span class="text-danger remove-btn" onclick="removeSection(this)">Remove</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Subject Name</label>
+                                <input type="text" class="form-control subject-name" required>
+                            </div>
+
+                            <div class="chapters-section">
+                                <div class="dynamic-section chapter-section mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6>Chapter 1</h6>
+                                        <span class="text-danger remove-btn" onclick="removeSection(this)">Remove</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Chapter Number</label>
+                                        <input type="number" class="form-control chapter-number" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Chapter Name</label>
+                                        <input type="text" class="form-control chapter-name" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="addChapter(this)">Add
+                                Chapter</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="button" class="btn btn-primary" onclick="addSubject()">Add Subject</button>
+                        <button type="submit" class="btn btn-success">Create Course</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addSubject() {
+            const subjectCount = document.querySelectorAll('.subject-section').length + 1;
+            const subjectHTML = `
+                <div class="dynamic-section subject-section">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5>Subject ${subjectCount}</h5>
+                        <span class="text-danger remove-btn" onclick="removeSection(this)">Remove</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Subject Name</label>
+                        <input type="text" class="form-control subject-name" required>
+                    </div>
+
+                    <div class="chapters-section">
+                        <div class="dynamic-section chapter-section mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6>Chapter 1</h6>
+                                <span class="text-danger remove-btn" onclick="removeSection(this)">Remove</span>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Chapter Number</label>
+                                <input type="number" class="form-control chapter-number" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Chapter Name</label>
+                                <input type="text" class="form-control chapter-name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addChapter(this)">Add Chapter</button>
+                </div>`;
+            document.getElementById('subjects-section').insertAdjacentHTML('beforeend', subjectHTML);
+        }
+
+        function addChapter(button) {
+            const subjectSection = button.closest('.subject-section');
+            const chapterCount = subjectSection.querySelectorAll('.chapter-section').length + 1;
+            const chapterHTML = `
+                <div class="dynamic-section chapter-section mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6>Chapter ${chapterCount}</h6>
+                        <span class="text-danger remove-btn" onclick="removeSection(this)">Remove</span>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Chapter Number</label>
+                        <input type="number" class="form-control chapter-number" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Chapter Name</label>
+                        <input type="text" class="form-control chapter-name" required>
+                    </div>
+                </div>`;
+            subjectSection.querySelector('.chapters-section').insertAdjacentHTML('beforeend', chapterHTML);
+        }
+
+        function removeSection(element) {
+            element.closest('.dynamic-section').remove();
+        }
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const courseData = {
+                courseName: document.getElementById('courseName').value,
+                courseDescription: document.getElementById('courseDescription').value,
+                subjects: []
+            };
+
+            document.querySelectorAll('.subject-section').forEach(subject => {
+                const subjectData = {
+                    subjectName: subject.querySelector('.subject-name').value,
+                    chapters: []
+                };
+
+                subject.querySelectorAll('.chapter-section').forEach(chapter => {
+                    subjectData.chapters.push({
+                        chapterNumber: chapter.querySelector('.chapter-number').value,
+                        chapterName: chapter.querySelector('.chapter-name').value
+                    });
+                });
+
+                courseData.subjects.push(subjectData);
+            });
+
+            // Check if hidden input already exists
+            let hiddenInput = document.querySelector('input[name="subjects"]');
+            if (!hiddenInput) {
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'subjects';
+                this.appendChild(hiddenInput);
+            }
+            hiddenInput.value = JSON.stringify(courseData.subjects);
+
+            this.submit();
+        });
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

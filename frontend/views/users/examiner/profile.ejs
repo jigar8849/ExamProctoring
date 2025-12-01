@@ -1,0 +1,99 @@
+<head>
+    <title>Profile - Terzettoo</title>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+
+<body>
+    <div class="profile-header">
+        <div class="profile-image">
+            <img src="<%= user.photoUrl || 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Ratan_Tata_2011_%28The_TCS_Story_Launch_-_CII%29_%28cropped%29.jpg' %>"
+                alt="Profile Picture">
+            <span class="edit-icon">✏️</span> <!-- Edit Icon -->
+        </div>
+        <div class="profile-info">
+            <h2>
+                <%= user.username.toUpperCase() %>
+            </h2>
+            <p class="role">
+                <%= user.accessType.charAt(0).toUpperCase() + user.accessType.slice(1) %>
+            </p>
+        </div>
+    </div>
+    <div class="basic-info-div">
+        <h5>Basic Information</h5>
+        <div class="d-flex justify-content-between align-items-center gap-4">
+            <a href="" class="edit-btn"><i class="fa-solid fa-pen"></i> Edit</a>
+            <i class="fa-solid fa-chevron-up"></i>
+        </div>
+    </div>
+    <div class="profile-details">
+        <div class="section">
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fa-regular fa-user fontawsome-image-reset"></i>
+                    <div class="basic-info-detail">
+                        <p class="head">Name:</p>
+                        <p class="detail">
+                            <%= user.username.toUpperCase() %>
+                        </p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-phone-volume fontawsome-image-reset"></i>
+                    <div class="basic-info-detail">
+                        <p class="head">Mobile:</p>
+                        <p class="detail">
+                            <%= user.mobile || '----' %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-at fontawsome-image-reset"></i>
+                    <div class="basic-info-detail ">
+                        <p class="head">Email:</p>
+                        <p class="detail">
+                            <%= user.emailId || '----' %>
+                        </p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-circle-info fontawsome-image-reset"></i>
+                    <div class="basic-info-detail">
+                        <p class="head">About:</p>
+                        <p class="detail">
+                            <%= user.bio || '----' %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-id-card fontawsome-image-reset"></i>
+                    <div class="basic-info-detail">
+                        <p class="head">Employer Id:</p>
+                        <p class="detail">
+                            <%= user.universityId || '----' %>
+                        </p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-regular fa-calendar fontawsome-image-reset"></i>
+                    <div class="basic-info-detail">
+                        <p class="head">Date of Joining:</p>
+                        <p class="detail">
+                            <%= user.dateOfJoining.toLocaleDateString() || '----' %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const fa_chevron_up = document.querySelector('.fa-chevron-up');
+    const profile_details = document.querySelector('.profile-details');
+    fa_chevron_up.addEventListener('click', () => {
+        profile_details.classList.toggle('hide');
+    });
+
+</script>

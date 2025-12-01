@@ -1,0 +1,250 @@
+body {
+    font-family: "Poppins", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.5rem;
+    padding: 0 1.5rem;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    padding-left: 4rem;
+    position: fixed;
+    z-index: 1;
+}
+
+.left-inner-div {
+    display: flex;
+    align-items: center;
+}
+
+.logo-title {
+    margin-left: 1rem;
+user-select: none;
+    text-align: center;
+}
+
+.logo-title-up {
+    font-size: 1.0rem;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 0.2rem;
+}
+
+.logo-divider {
+    width: 100%;
+    max-width: 12rem;
+    /* Adjusted max-width for smaller header */
+    border: 1px solid black;
+    margin: 0 auto;
+}
+
+.logo-title-down {
+    font-size: 0.5rem;
+    /* Reduced font size for a more compact look */
+    font-weight: 500;
+    margin: 0;
+}
+
+.auth-buttons button {
+    width: auto;
+    height: 2.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    padding: 8px 15px;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    transition: box-shadow 0.3s ease;
+    /* Only transition box-shadow */
+}
+
+.auth-buttons button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    /* Stronger shadow on hover */
+}
+
+.login {
+    background-color: white;
+    color: #2F80ED;
+    border: 2px solid #2F80ED;
+}
+
+.signup {
+    background-color: #2F80ED;
+    color: white;
+    border: 2px solid #2F80ED;
+}
+
+
+.right-inner-div {
+    display: flex;
+    align-items: center;
+    padding-right: 4rem;
+    width: fit-content;
+}
+
+.logo-img {
+    height: 3.5rem;
+    width: 3.5rem;
+}
+
+
+.main {
+    height: 100vh;
+    background-color: #E5E5E5;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 4rem;
+    height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+    padding-top: 1.5rem;
+    z-index: 1;
+}
+
+.ham-item {
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
+    padding-left: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.ham-item:hover {
+    background: rgb(248, 248, 249);
+    background: linear-gradient(90deg, rgba(248, 248, 249, 0.9837) 0%, rgba(212, 214, 214, 1) 50%);
+}
+
+.ham-item img {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 1rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.ham-item span {
+    opacity: 0;
+    font-size: 1rem;
+    color: #1d1b20;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar:hover .ham-item span {
+    opacity: 1;
+    transform: translateX(10px);
+}
+
+.sidebar:hover {
+    width: 12rem;
+    /* padding-right: 1.5rem; */
+}
+
+.hamburger {
+    height: 3rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    /* This creates space below the hamburger */
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: color 0.3s ease;
+}
+
+.hamburger+.ham-container {
+    width: 100%;
+    margin-top: 4rem;
+    /* Adds extra gap between hamburger and ham-container */
+}
+
+.hamburger:hover {
+    color: #333;
+}
+
+.hamburger-bar {
+    width: 2rem;
+    height: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bar {
+    width: 100%;
+    height: 4px;
+    background: black;
+    border-radius: 5px;
+}
+
+.container-main {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 6rem;
+    background-color: #ffffff;
+    margin: auto;
+    margin-left: 7%;
+    width: calc(100% - 13rem);
+    padding: 1rem;
+    box-shadow: 0px 9px 11.7px  7px rgba(0, 0, 0, 0.1);
+    z-index: 0;
+    height: fit-content;
+    margin-top: 0%;
+    z-index: 0;
+    height: 87vh;
+    overflow-y: scroll;
+}
+
+
+
+@media (max-width: 480px){
+    header{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .right-inner-div{
+        padding-right: 0rem;
+    }
+    .container-main {
+        position: absolute;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        bottom: 0;
+        left: 4rem;
+        top: 3.4rem;
+        background-color: #ffffff;
+        width: 87%;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 0;
+        overflow-x: hidden;
+    }
+}

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProctoX – AI Exam Proctoring Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #2D3142;
+      --secondary: #BFC0C0;
+      --accent: #EF8354;
+      --accent-light: #F4A261;
+      --dark: #1A1B25;
+      --light: #FFFFFF;
+      --cream: #FDF8F3;
+      --gray: #4F5D75;
+      --success: #06D6A0;
+      --alert: #FF6B6B;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .home-page {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* NEW HERO SECTION - CENTERED WITH BENTO CARDS */
+    .hero {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+      padding: 8rem 5% 5rem;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(239, 131, 84, 0.15), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -15%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(6, 214, 160, 0.1), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto 4rem;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(239, 131, 84, 0.15);
+      border: 1.5px solid var(--accent);
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      color: var(--accent-light);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+    }
+
+    .hero-badge::before {
+      content: '●';
+      color: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 4.5rem;
+      font-weight: 800;
+      color: var(--light);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -2px;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.2rem;
+      color: var(--secondary);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 1rem 2.5rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      color: var(--light);
+      box-shadow: 0 10px 40px rgba(239, 131, 84, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 50px rgba(239, 131, 84, 0.5);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--light);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--light);
+    }
+
+    .hero-note {
+      font-size: 0.9rem;
+      color: var(--secondary);
+      margin-top: 1rem;
+    }
+
+    /* BENTO GRID CARDS */
+    .hero-bento {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+      animation: fadeInUp 1s ease 0.3s both;
+    }
+
+    .bento-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+
+    .bento-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .bento-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .bento-card.large {
+      grid-column: span 2;
+    }
+
+    .bento-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .bento-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--light);
+      margin-bottom: 0.5rem;
+    }
+
+    .bento-desc {
+      font-size: 0.9rem;
+      color: var(--secondary);
+      line-height: 1.6;
+    }
+
+    .bento-stat {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--accent-light);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .bento-highlight {
+      background: linear-gradient(135deg, rgba(6, 214, 160, 0.1), rgba(6, 214, 160, 0.05));
+      border-color: rgba(6, 214, 160, 0.3);
+    }
+
+    .bento-highlight .bento-stat {
+      color: var(--success);
+    }
+
+    /* PORTALS SECTION */
+    .portals-section {
+      padding: 6rem 5%;
+      background: var(--light);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 4rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--gray);
+      line-height: 1.8;
+    }
+
+    .portals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .portal-card {
+      background: var(--cream);
+      border-radius: 20px;
+      padding: 2.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+
+    .portal-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .portal-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border-color: var(--accent);
+    }
+
+    .portal-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 30px rgba(239, 131, 84, 0.3);
+    }
+
+    .portal-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .portal-card p {
+      font-size: 1rem;
+      color: var(--gray);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .features-list {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .features-list li {
+      padding: 0.7rem 0;
+      color: var(--gray);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .features-list li::before {
+      content: '✓';
+      width: 24px;
+      height: 24px;
+      background: var(--accent);
+      color: var(--light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .portal-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: gap 0.3s;
+    }
+
+    .portal-link:hover {
+      gap: 1rem;
+    }
+
+    /* PROCESS SECTION */
+    .process-section {
+      padding: 6rem 5%;
+      background: linear-gradient(135deg, var(--dark) 0%, #2a2b3d 100%);
+      position: relative;
+    }
+
+    .process-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .process-step {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2.5rem;
+      transition: all 0.4s;
+      position: relative;
+    }
+
+    .process-step:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-5px);
+    }
+
+    .step-number {
+      position: absolute;
+      top: -15px;
+      left: 2rem;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--light);
+      box-shadow: 0 10px 30px rgba(239, 131, 84, 0.4);
+    }
+
+    .process-step h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--light);
+      margin-bottom: 1rem;
+      margin-top: 1rem;
+      font-weight: 700;
+    }
+
+    .process-step p {
+      color: var(--secondary);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    /* FEATURES SECTION */
+    .features-section {
+      padding: 6rem 5%;
+      background: var(--cream);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--light);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s;
+      border: 2px solid transparent;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border-color: var(--accent-light);
+    }
+
+    .feature-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .feature-card p {
+      color: var(--gray);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: var(--dark);
+      padding: 2.5rem 5%;
+      text-align: center;
+    }
+
+    .footer p {
+      color: var(--secondary);
+      font-size: 0.95rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 968px) {
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .hero-bento {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .bento-card.large {
+        grid-column: span 1;
+      }
+
+      .section-title {
+        font-size: 2.2rem;
+      }
+
+      .portals-grid,
+      .process-grid,
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding: 5rem 5% 3rem;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+        letter-spacing: -1px;
+      }
+
+      .hero-sub {
+        font-size: 1rem;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero-bento {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .bento-stat {
+        font-size: 2.5rem;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="home-page">
+
+  <!-- NEW HERO SECTION -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">AI-Powered Proctoring</div>
+        <h1>
+          The Future of <span class="highlight">Online Exams</span> Starts Here
+        </h1>
+        <p class="hero-sub">
+          Create secure exams, monitor students with AI, and deliver instant analytics—all through three dedicated portals built for teachers, students, and parents.
+        </p>
+        <div class="hero-cta">
+          <a href="/register" class="btn btn-primary">Start Free Trial →</a>
+          <a href="#portals" class="btn btn-secondary">Explore Portals</a>
+        </div>
+        <p class="hero-note">✨ No credit card required · 14-day free trial</p>
+      </div>
+
+      <!-- BENTO GRID -->
+      <div class="hero-bento">
+        <div class="bento-card bento-highlight large">
+          <span class="bento-stat">99.8%</span>
+          <div class="bento-title">Detection Accuracy</div>
+          <p class="bento-desc">Industry-leading AI identifies suspicious behavior in real-time</p>
+        </div>
+
+        <div class="bento-card">
+          <span class="bento-icon">👨‍🏫</span>
+          <div class="bento-title">For Teachers</div>
+          <p class="bento-desc">Create & monitor exams effortlessly</p>
+        </div>
+
+        <div class="bento-card">
+          <span class="bento-icon">🎓</span>
+          <div class="bento-title">For Students</div>
+          <p class="bento-desc">Secure, distraction-free testing</p>
+        </div>
+
+        <div class="bento-card">
+          <span class="bento-icon">🔒</span>
+          <div class="bento-title">AI Monitoring</div>
+          <p class="bento-desc">Face detection, tab tracking, audio analysis</p>
+        </div>
+
+        <div class="bento-card">
+          <span class="bento-icon">📊</span>
+          <div class="bento-title">Live Analytics</div>
+          <p class="bento-desc">Real-time performance insights</p>
+        </div>
+
+        <div class="bento-card large">
+          <span class="bento-icon">👪</span>
+          <div class="bento-title">Parent Portal Access</div>
+          <p class="bento-desc">Track your child's progress, scores, and exam integrity from one dashboard</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTALS SECTION -->
+  <section id="portals" class="portals-section">
+    <div class="section-header">
+      <div class="section-tag">Three Portals</div>
+      <h2 class="section-title">Built for every role in education</h2>
+      <p class="section-desc">
+        Separate dashboards designed for teachers, students, and parents—each optimized for their unique needs.
+      </p>
+    </div>
+
+    <div class="portals-grid">
+      <div class="portal-card">
+        <div class="portal-icon">👨‍🏫</div>
+        <h3>Examiner Portal</h3>
+        <p>Create, schedule, and monitor exams with complete control over proctoring settings and analytics.</p>
+        <ul class="features-list">
+          <li>Drag-and-drop question builder</li>
+          <li>Live student monitoring feed</li>
+          <li>AI-powered cheat detection</li>
+          <li>Automated grading system</li>
+        </ul>
+        <a href="/teacher/login" class="portal-link">Access Portal →</a>
+      </div>
+
+      <div class="portal-card">
+        <div class="portal-icon">🎓</div>
+        <h3>Examinee Portal</h3>
+        <p>Focus-friendly exam environment with secure proctoring that ensures fairness for everyone.</p>
+        <ul class="features-list">
+          <li>Clean, distraction-free UI</li>
+          <li>Question palette & timer</li>
+          <li>Auto-save & warnings</li>
+          <li>Instant submission status</li>
+        </ul>
+        <a href="/student/login" class="portal-link">Access Portal →</a>
+      </div>
+
+      <div class="portal-card">
+        <div class="portal-icon">👪</div>
+        <h3>Parent Portal</h3>
+        <p>Stay connected with your child's academic journey through comprehensive performance insights.</p>
+        <ul class="features-list">
+          <li>Exam calendar & reminders</li>
+          <li>Score trends & analytics</li>
+          <li>Strength-weakness reports</li>
+          <li>Integrity & attendance logs</li>
+        </ul>
+        <a href="/parent/login" class="portal-link">Access Portal →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS SECTION -->
+  <section class="process-section">
+    <div class="section-header">
+      <div class="section-tag" style="color: var(--accent-light);">How It Works</div>
+      <h2 class="section-title" style="color: var(--light);">From creation to results in 4 steps</h2>
+      <p class="section-desc" style="color: var(--secondary);">
+        A streamlined workflow that makes online exams simple, secure, and transparent.
+      </p>
+    </div>
+
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="step-number">01</div>
+        <h4>Create & Schedule</h4>
+        <p>Teachers build exams using our intuitive question builder and set proctoring rules.</p>
+      </div>
+
+      <div class="process-step">
+        <div class="step-number">02</div>
+        <h4>Secure Attempt</h4>
+        <p>Students join via link; AI monitors face, tabs, and audio in real-time.</p>
+      </div>
+
+      <div class="process-step">
+        <div class="step-number">03</div>
+        <h4>Auto Analysis</h4>
+        <p>Instant scoring, behavior logs, and flag reports generated automatically.</p>
+      </div>
+
+      <div class="process-step">
+        <div class="step-number">04</div>
+        <h4>Parent Insights</h4>
+        <p>Parents view performance charts, integrity scores, and progress trends.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="features-section">
+    <div class="section-header">
+      <div class="section-tag">Platform Benefits</div>
+      <h2 class="section-title">Why educators trust ProctoX</h2>
+      <p class="section-desc">
+        Powerful features that ensure exam integrity while delivering insights that matter.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>📈 Real-time Analytics</h3>
+        <p>Track student performance, engagement patterns, and improvement areas with visual dashboards and detailed reports.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>🔒 99.8% Accuracy</h3>
+        <p>AI-powered proctoring detects suspicious behavior, tab switches, and multiple faces with industry-leading precision.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>📱 Any Device, Anywhere</h3>
+        <p>Fully responsive design optimized for desktops, tablets, and mobile devices with low-bandwidth support.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© 2025 TEAM SOCCA · AI-Powered Exam Proctoring Platform</p>
+  </footer>
+
+</div>
+</body>
+</html>

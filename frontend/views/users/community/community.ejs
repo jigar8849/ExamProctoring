@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Community Feed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    .post-card { margin-bottom: 20px; }
+    .post-card img { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="/community">Community</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="/community">Feed</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/community/new">New Post</a>
+          </li>
+        </ul>
+        <span class="navbar-text">
+          Logged in as <strong><%= user.username %></strong>
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <% if(posts && posts.length > 0) { %>
+      <% posts.forEach(post => { %>
+        <div class="card post-card shadow-sm">
+          <div class="card-header">
+            <strong><%= post.createdBy.username %></strong>
+            <span class="text-muted float-end"><%= new Date(post.createdAt).toLocaleString() %></span>
+          </div>
+          <div class="card-body">
+            <p class="card-text"><%= post.content %></p>
+            <% if(post.attachments && post.attachments.image) { %>
+              <img src="<%= post.attachments.image %>" alt="Post Image" class="img-fluid rounded mb-3">
+            <% } %>
+            <% if(post.attachments && post.attachments.pdf) { %>
+              <p>
+                <i class="bi bi-file-earmark-pdf-fill text-danger"></i>
+                PDF: <a href="<%= post.attachments.pdf %>" target="_blank">View/Download</a>
+              </p>
+            <% } %>
+          </div>
+          <div class="card-footer d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <i class="bi bi-heart-fill text-danger"></i> <%= post.likes.length %> Likes 
+              &middot; <i class="bi bi-chat"></i> <%= post.comments.length %> Comments
+            </small>
+            <a href="/community/<%= post._id %>" class="btn btn-sm btn-primary">View Post</a>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <div class="alert alert-info">
+        No posts yet. <a href="/community/new">Create a new post</a>.
+      </div>
+    <% } %>
+  </div>
+
+</body>
+</html>

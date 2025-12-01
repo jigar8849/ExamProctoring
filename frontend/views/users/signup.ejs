@@ -1,0 +1,114 @@
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - Terzettoo</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card shadow-lg p-4 rounded">
+            <div class="alert alert-danger" id="errorMessage" style="display: none"></div>
+            <div class="alert alert-success" id="successMessage" style="display: none"></div>
+
+            <h4 class="card-title text-center mb-4">Sign Up</h4>
+            <form action="/auth/signup" method="post" enctype="multipart/form-data" novalidate id="signupForm">
+              <div class="mb-3">
+                <label for="username" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <div class="position-relative" style="width: 100%">
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required style="padding-right: 40px" />
+                  <i id="eyeIcon" class="bi bi-eye-slash position-absolute" aria-label="Toggle password visibility" style="top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer;"></i>
+                </div>
+                <small id="passwordError" class="form-text text-danger hidden">Password must be at least 8 characters long and include letters, numbers, and special characters.</small>
+              </div>
+
+              <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required />
+                <small id="confirmPasswordError" class="form-text text-danger hidden">Passwords do not match.</small>
+              </div>
+
+              <div class="mb-3">
+                <label for="mobileNumber" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" id="mobileNumber" name="mobileNumber" placeholder="Enter your mobile number" />
+              </div>
+              
+              <div class="mb-3">
+                <label for="accessType" class="form-label">Access Type</label>
+                <select class="form-select" id="accessType" name="accessType" required>
+                  <option value="" disabled selected>Select your access type</option>
+                  <option value="examiner">Examiner</option>
+                  <option value="examinee">Examinee</option>
+                  <option value="parent">Parent</option>
+                </select>
+              </div>
+
+              <!-- Examiner specific field -->
+              <div id="examinerFields" class="hidden">
+                <div class="mb-3">
+                  <label for="universityId" class="form-label">Roll No.</label>
+                  <input type="number" class="form-control" id="universityId" name="universityId" placeholder="Enter your roll number" />
+                </div>
+              </div>
+
+              <!-- Parent specific field -->
+              <div id="parentFields" class="hidden">
+                <div class="mb-3">
+                  <label for="childrenIds" class="form-label">Children IDs</label>
+                  <input type="text" class="form-control" id="childrenIds" name="childrenIds" placeholder="Enter your children's IDs (comma separated)" />
+                </div>
+              </div>
+
+              <div class="mb-3 hidden" id="examinee-photo">
+                <label class="form-label">Profile Photo (Examinee)</label>
+                <div class="profile-photo">
+                  <div class="camera-div">
+                    <i class="bi bi-camera camera-icon"></i>
+                  </div>
+                </div>
+                <p class="retake">Retake</p>
+              </div>
+
+              <!-- Hidden input to capture photo if needed -->
+              <input type="hidden" id="capturedPhoto" name="photo" />
+
+              <div class="mb-3 hidden" id="examiner-photo">
+                <label for="photo" class="form-label">Profile Photo (Examiner)</label>
+                <input type="file" class="form-control" id="photo" name="photo" />
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+            </form>
+            <div class="text-center mt-3">
+              <p>Already have an account? <a href="/auth/login" class="text-danger">Login</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/Js/signup.js"></script>

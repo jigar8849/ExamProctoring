@@ -1,0 +1,100 @@
+<head>
+  <title>Create Exam - Terzettoo</title>
+  <link rel="stylesheet" href="/css/create-exam.css">
+</head>
+
+<body>
+  <h2 class="text-center txt-createexam">Create Exam</h2>
+  <div class="form-container">
+    <form action="/examiner/create-exam" method="POST">
+
+      <div class="utlities">
+        <label for="examName">Exam Name</label>
+        <input type="text" id="examName" name="examName" placeholder="Enter exam name" required>
+
+        <label for="duration">Duration</label>
+        <select id="duration" name="duration" required>
+          <option value="10">10 Minutes</option>
+          <option value="15">15 Minutes</option>
+        </select>
+
+        <label for="schedule-date">Schedule Date</label>
+        <input type="date" id="schedule-date" name="scheduleDate" required>
+
+        <label for="schedule-time">Schedule Time</label>
+        <input type="time" id="schedule-time" name="scheduleTime" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description"
+          placeholder="Enter description">
+        </textarea>
+
+      </div>
+
+      <div class="question-container" id="question-1">
+        <label for="question-1-text">Question 1</label>
+        <textarea id="question-1-text" name="questions[0][questionText]" placeholder="Enter question text" required></textarea>
+
+        <label>Options</label>
+        <div class="option-container">
+          <input type="radio" name="questions[0][correctAnswer]" value="0" required>
+          <input type="text" name="questions[0][options][]" placeholder="Option - 1" required>
+        </div>
+        <div class="option-container">
+          <input type="radio" name="questions[0][correctAnswer]" value="1">
+          <input type="text" name="questions[0][options][]" placeholder="Option - 2" required>
+        </div>
+        <div class="option-container">
+          <input type="radio" name="questions[0][correctAnswer]" value="2">
+          <input type="text" name="questions[0][options][]" placeholder="Option - 3" required>
+        </div>
+        <div class="option-container">
+          <input type="radio" name="questions[0][correctAnswer]" value="3">
+          <input type="text" name="questions[0][options][]" placeholder="Option - 4" required>
+        </div>
+      </div>
+
+      <button type="button" class="add-question-btn" onclick="addNewQuestion()">Add New Question</button>
+      <button type="submit" class="btn" style="margin-top: 1rem;">Create Exam</button>
+    </form>
+  </div>
+
+
+  <script>
+    let questionCount = 1;
+
+    function addNewQuestion() {
+      questionCount++;
+      const questionContainer = document.createElement('div');
+      questionContainer.classList.add('question-container');
+      questionContainer.id = `question-${questionCount}`;
+
+      questionContainer.innerHTML = `
+    <label for="question-${questionCount}-text">Question ${questionCount}</label>
+    <textarea id="question-${questionCount}-text" name="questions[${questionCount - 1}][questionText]" placeholder="Enter question text" required></textarea>
+
+    <label>Options</label>
+    <div class="option-container">
+      <input type="radio" name="questions[${questionCount - 1}][correctAnswer]" value="0" required>
+      <input type="text" name="questions[${questionCount - 1}][options][]" placeholder="Option - 1" required>
+    </div>
+    <div class="option-container">
+      <input type="radio" name="questions[${questionCount - 1}][correctAnswer]" value="1">
+      <input type="text" name="questions[${questionCount - 1}][options][]" placeholder="Option - 2" required>
+    </div>
+    <div class="option-container">
+      <input type="radio" name="questions[${questionCount - 1}][correctAnswer]" value="2">
+      <input type="text" name="questions[${questionCount - 1}][options][]" placeholder="Option - 3" required>
+    </div>
+    <div class="option-container">
+      <input type="radio" name="questions[${questionCount - 1}][correctAnswer]" value="3">
+      <input type="text" name="questions[${questionCount - 1}][options][]" placeholder="Option - 4" required>
+    </div>
+  `;
+
+      document.querySelector('form').insertBefore(questionContainer, document.querySelector('.add-question-btn'));
+    }
+  </script>
+</body>
+
+</html>

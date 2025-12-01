@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        .ham-container a {
+            text-decoration: none;
+        }
+
+        .ham-container a:hover {
+            color: #007bff;
+        }
+
+        .ham-container a {
+            color: inherit;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="hamburger" id="hamburger">
+            <div class="hamburger-bar">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+
+        <div class="ham-container" id="ham-container">
+            <% if (currentUser) { %>
+                <div class="ham-item" id="home-item">
+                    <a href="/<%= currentUser.accessType %>/">
+                        <img src="/images/Home.png" alt="Home Icon">
+                        <span>Home</span>
+                    </a>
+                </div>
+
+                <% if (currentUser.accessType==='examiner' ) { %>
+                    <div class="ham-item" id="dashboard-item">
+                        <a href="/examiner/dashboard">
+                            <img src="/images/Dashboard.png" alt="Dashboard Icon">
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
+
+                    <div class="ham-item" id="profile-item">
+                        <a href="/examiner/courses">
+                            <img src="/images/book.png" alt="Profile Icon">
+                            <span>Courses</span>
+                        </a>
+                    </div>
+
+                    <div class="ham-item" id="profile-item">
+                        <a href="/examiner/profile">
+                            <img src="/images/account_circle.png" alt="Profile Icon">
+                            <span>Profile</span>
+                        </a>
+                    </div>
+
+                    <% } else if (currentUser.accessType==='examinee' ) { %>
+                        <div class="ham-item" id="dashboard-item">
+                            <a href="/examinee/dashboard">
+                                <img src="/images/Dashboard.png" alt="Dashboard Icon">
+                                <span>Dashboard</span>
+                            </a>
+                        </div>
+
+                        <div class="ham-item" id="profile-item">
+                            <a href="/examinee/courses">
+                                <img src="/images/book.png" alt="Profile Icon">
+                                <span>Courses</span>
+                            </a>
+                        </div>
+
+                        <div class="ham-item" id="profile-item">
+                            <a href="/examinee/profile">
+                                <img src="/images/account_circle.png" alt="Profile Icon">
+                                <span>Profile</span>
+                            </a>
+                        </div>
+
+
+                        <% } %>
+                        <div class="ham-item" id="home-item">
+                            <a href="/community">
+                                <img src="/images/Community.png" alt="Home Icon">
+                                <span>Community</span>
+                            </a>
+                        </div>
+                            <% } %>                
+
+        </div>
+    </div>
+</body>
+
+</html>

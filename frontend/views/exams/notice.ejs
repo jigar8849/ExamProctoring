@@ -1,0 +1,246 @@
+<head>
+  <title>Notice - Terzettoo</title>
+</head>
+<body>
+  <div class="notice-title">Before You Start the Exam</div>
+  <div class="notice-main">
+    <div class="notice-card">
+
+      <div class="section-title">Rules & Guidelines</div>
+      <ul class="list-group">
+        <li class="list-group-item">
+          Ensure you are in a quiet and well-lit environment with no
+          distractions.
+        </li>
+        <li class="list-group-item">
+          Your camera must remain ON throughout the exam session.
+        </li>
+        <li class="list-group-item">
+          Do not minimize or leave the exam screen during the test.
+        </li>
+        <li class="list-group-item">
+          Any suspicious behavior (looking away frequently, multiple people in
+          view) may result in disqualification.
+        </li>
+        <li class="list-group-item">
+          No external assistance or unauthorized devices (mobile phones,
+          secondary screens, or notes) are allowed.
+        </li>
+      </ul>
+
+      <div class="section-title">Technical Requirements</div>
+      <ul class="list-group">
+        <li class="list-group-item">
+          Your camera and microphone will be tested before you start.
+        </li>
+        <li class="list-group-item">
+          Ensure a stable internet connection to avoid interruptions.
+        </li>
+        <li class="list-group-item">
+          The exam is monitored using AI-powered proctoring for fairness.
+        </li>
+      </ul>
+
+      <!-- Start Exam Button (Initially hidden) -->
+      <div id="start-exam-btn" class="start-exam-btn">
+        <a
+          href="/examinee/exams/<%= exam._id %>/start"
+          class="btn btn-success w-100 mt-3"
+          onclick="document.documentElement.requestFullscreen()"
+        >
+          Start Exam
+        </a>
+      </div>
+
+      <div id="alert-container"></div>
+    </div>
+
+    <div class="equpment-check">
+      <div id="camera-preview" style="box-shadow: none">
+        <video id="videoElement" autoplay playsinline muted></video>
+        <div class="circle-music-icon" id="mic-circle">
+          <i class="fa fa-music"></i>
+        </div>
+      </div>
+
+      <!-- Dropdown for camera and microphone selection -->
+      <div class="form-group">
+        <label for="cameraSelect">Select Camera:</label>
+        <select id="cameraSelect" class="form-control">
+          <option value="">Loading cameras...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="micSelect">Select Microphone:</label>
+        <select id="micSelect" class="form-control">
+          <option value="">Loading microphones...</option>
+        </select>
+      </div>
+
+      <button id="start-checks" class="btn btn-custom w-90">
+        Check Overall System
+      </button>
+    </div>
+  </div>
+
+  <script>
+    async function getMediaDevices() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cameras = [];
+        const microphones = [];
+
+        devices.forEach((device) => {
+          if (device.kind === "videoinput") {
+            cameras.push(device);
+          } else if (device.kind === "audioinput") {
+            microphones.push(device);
+          }
+        });
+
+        // Populate the dropdowns with available devices
+        const cameraSelect = document.getElementById("cameraSelect");
+        const micSelect = document.getElementById("micSelect");
+
+        cameraSelect.innerHTML = '<option value="">Select Camera</option>';
+        microphones.forEach((mic) => {
+          const option = document.createElement("option");
+          option.value = mic.deviceId;
+          option.textContent = mic.label || `Microphone ${mic.deviceId}`;
+          micSelect.appendChild(option);
+        });
+
+        cameras.forEach((camera) => {
+          const option = document.createElement("option");
+          option.value = camera.deviceId;
+          option.textContent = camera.label || `Camera ${camera.deviceId}`;
+          cameraSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Error getting media devices:", error);
+        alert("Failed to load devices. Please check your browser settings.");
+      }
+    }
+
+    // Run device enumeration on page load
+    window.addEventListener("load", getMediaDevices);
+
+    let mediaStream = null;
+    let audioContext = null;
+    let analyserNode = null;
+    let microphone = null;
+    let frequencyData = null;
+    let previousAverageFrequency = 0;
+
+    // Function to start the media stream (video & audio) based on selected devices
+    async function startMediaStream(selectedCameraId, selectedMicId) {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop()); // Stop any existing stream
+      }
+
+      try {
+        // Request media access for selected devices
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: selectedCameraId },
+          audio: { deviceId: selectedMicId },
+        });
+
+        // Update the video element with the selected camera
+        const videoElement = document.getElementById("videoElement");
+        videoElement.srcObject = mediaStream;
+
+        // Setup audio visualizer
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyserNode = audioContext.createAnalyser();
+        analyserNode.fftSize = 256;
+        const microphoneStream = mediaStream.getAudioTracks()[0];
+        microphone = audioContext.createMediaStreamSource(
+          new MediaStream([microphoneStream])
+        );
+        microphone.connect(analyserNode);
+
+        frequencyData = new Uint8Array(analyserNode.frequencyBinCount);
+
+        // Start the audio visualizer with smoothing
+        const audioVisualizer = () => {
+          analyserNode.getByteFrequencyData(frequencyData);
+          const averageFrequency =
+            frequencyData.reduce((a, b) => a + b, 0) / frequencyData.length;
+          const smoothedFrequency =
+            previousAverageFrequency * 0.9 + averageFrequency * 0.1;
+          previousAverageFrequency = smoothedFrequency;
+
+          const size = Math.max(50, smoothedFrequency / 1); // Adjust size
+          const micCircle = document.getElementById("mic-circle");
+          micCircle.style.width = `${size}px`;
+          micCircle.style.height = `${size}px`;
+
+          requestAnimationFrame(audioVisualizer);
+        };
+        audioVisualizer();
+      } catch (error) {
+        console.error("Error accessing media devices:", error);
+        alert(
+          "Error accessing camera or microphone. Please check your permissions."
+        );
+      }
+    }
+
+    // Event listeners to update preview on camera or mic selection
+    document
+      .getElementById("cameraSelect")
+      .addEventListener("change", (event) => {
+        const selectedCameraId = event.target.value;
+        const selectedMicId = document.getElementById("micSelect").value;
+        if (selectedCameraId && selectedMicId) {
+          startMediaStream(selectedCameraId, selectedMicId); // Update stream
+        }
+      });
+
+    document.getElementById("micSelect").addEventListener("change", (event) => {
+      const selectedMicId = event.target.value;
+      const selectedCameraId = document.getElementById("cameraSelect").value;
+      if (selectedCameraId && selectedMicId) {
+        startMediaStream(selectedCameraId, selectedMicId); // Update stream
+      }
+    });
+
+    // Check overall system (camera, microphone, and internet connectivity)
+    document.getElementById("start-checks").addEventListener("click", () => {
+      const selectedCameraId = document.getElementById("cameraSelect").value;
+      const selectedMicId = document.getElementById("micSelect").value;
+      const alertContainer = document.getElementById("alert-container");
+      const startChecksBtn = document.getElementById("start-checks");
+
+      alertContainer.innerHTML = "";
+
+      if (!selectedCameraId || !selectedMicId) {
+        alertContainer.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            Please select both a camera and a microphone to proceed.
+          </div>`;
+        return;
+      }
+
+      if (!navigator.onLine) {
+        alertContainer.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            No internet connection detected. Please check your connectivity.
+          </div>`;
+        return;
+      }
+
+      startChecksBtn.style.display = "none";
+      startChecksBtn.classList.remove("btn-custom"); 
+      startChecksBtn.classList.add("btn-success"); 
+
+      document.getElementById("cameraSelect").classList.add("disabled");
+      document.getElementById("micSelect").classList.add("disabled");
+      startChecksBtn.disabled = false;
+
+      document.getElementById("start-exam-btn").style.display = "block";
+    });
+  </script>
+</body>
+<link rel="stylesheet" href="/css/notice.css" />

@@ -1,0 +1,132 @@
+<head>
+    <title>
+        <%= user.username.toUpperCase() %>'s Dashboard - Terzettoo
+    </title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+    <div class="alert alert-success alert-dismissible fade show col-6 offset-3 z-index-2 position-fixed" role="alert" id="success-alert" style="display: none;">
+        Exam ID copied to clipboard!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <div class="container">
+        <div class="dashboard">
+            <div class="stat dashboard-stats-1">
+              <span><%= totalExams %></span><br> Total Exams Created
+            </div>
+            <div class="stat dashboard-stats-2">
+              <span><%= totalStudents %></span><br> Total Students Enrolled
+            </div>
+            <div class="stat dashboard-stats-3">
+              <span><%= lastExamDate %></span><br> Last Exam Conducted
+            </div>
+            <div class="stat dashboard-stats-4">
+              <span><%= averageScore %>%</span><br> Average Student Score
+            </div>
+          </div>
+                  <h2 class="text-center my-4 fw-bold text-muted text-decoration-underline">Exams you have created</h2>
+        <% if (exams && exams.length > 0) { %>
+          <table class="table table-striped w-75">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Exam Title</th>
+                <th>Scheduled Time</th>
+                <th>Duration</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% exams.forEach(function(exam) { %>
+                <tr>
+                  <td><%= new Date(exam.createdAt).toLocaleDateString() %></td>
+                  <td>
+                    <a href="/examiner/exams/<%= exam._id %>/report" style="color: #dc3545;">
+                      <%= exam.examName %>
+                    </a>
+                  </td>
+                  <td><%= exam.scheduleTime ? exam.scheduleTime : 'Not Set' %></td>
+                  <td><%= exam.duration %> minutes</td>
+                  <td class="d-flex justify-content-center">
+                    <button class="btn btn-outline-secondary copyBtn" onclick="copyToClipboard('<%= exam._id %>')">
+                      Copy Exam ID
+                    </button>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <div class="text-center mt-5">
+            <h3 class="text-muted">It looks like you haven't created any exams yet.</h3>
+            <p class="mt-3">
+              Start by creating your first exam to engage your students and manage your exams effortlessly.
+            </p>
+            <a href="/examiner/create-exam">
+              <button class="btn btn-danger create-exam-btn">Create Your First Exam</button>
+            </a>
+          </div>
+        <% } %>
+        
+                    <h2 class="text-center my-4 fw-bold text-muted text-decoration-underline">Exam Analysis</h2>
+                    <table>
+                      <tr>
+                        <th>DATE</th>
+                        <th>TIME</th>
+                        <th>NAME</th>
+                        <th>SCORE</th>
+                        <th>SPAN</th>
+                        <th>REPORT</th>
+                      </tr>
+                      <% if (examinerStats && examinerStats.exams && examinerStats.exams.length > 0) { %>
+                        <% examinerStats.exams.forEach(function(examEntry) { 
+                             const examDoc = examEntry.examId;
+                             const examDate = examDoc.scheduleDate ? new Date(examDoc.scheduleDate) : new Date(examDoc.createdAt);
+                             const dateString = examDate.toLocaleDateString();
+                             const timeString = examDoc.scheduleTime 
+                                                 ? examDoc.scheduleTime 
+                                                 : new Date(examDoc.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        %>
+                          <tr>
+                            <td><%= dateString %></td>
+                            <td><%= timeString %></td>
+                            <td><%= examDoc.examName %></td>
+                            <!-- Display the total number of submissions as the SCORE -->
+                            <td><%= examEntry.totalSubmissions %></td>
+                            <!-- Display the exam duration as SPAN (e.g., "60 M") -->
+                            <td><%= examDoc.duration %> M</td>
+                            <td>
+                              <!-- Link to the report page for this exam; adjust the URL as needed -->
+                              <a href="/examiner/exams/<%= examDoc._id %>/report" class="analysis-button">ANALYSIS</a>
+                            </td>
+                          </tr>
+                        <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="6" class="text-center">No exam history available.</td>
+                        </tr>
+                      <% } %>
+                    </table>
+                    
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        // Show the custom success alert
+        const alertDiv = document.getElementById('success-alert');
+        alertDiv.style.display = 'block'; // Make the alert visible
+        
+        // Optionally, hide the alert after 3 seconds
+        setTimeout(() => {
+            alertDiv.style.display = 'none';
+        }, 3000);
+    }).catch(err => {
+        console.error('Could not copy text: ', err);
+    });
+}
+
+    </script>
+</body>

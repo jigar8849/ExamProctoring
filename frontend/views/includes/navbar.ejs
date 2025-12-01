@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <header>
+        <div class="left-inner-div">
+            
+            <div class="logo-title">
+                <p class="logo-title-up">TEAM SOCCA</p>
+                <hr class="logo-divider" />
+                <p class="logo-title-down">Silver Oak College of Computrer Application</p>
+            </div>
+        </div>
+        <div class="right-inner-div">
+            <div class="auth-buttons">
+                <% if (currentUser && currentUser.accessType === "examinee") { %>
+                    <a href="/examinee/chat" class="button-link">
+                        <button class="auth-button terzettoo-ai"
+                            style="border: 1px solid blue; background-color: #0d6efd;">
+                            <span class="btn-icon">
+                                <i class="fa-regular fa-message terzettoo-ai-text" style="color: white;"></i>
+                            </span>
+                            <span class="btn-text terzettoo-ai-text" style="color: white;">
+                                <span class="line2">Terzettoo AI</span>
+                            </span>
+                        </button>
+                    </a>
+                <% } %>
+                
+                <% if (currentUser) { %>
+                    <a href="/auth/logout" class="button-link">
+                        <button class="auth-button">Logout</button>
+                    </a>
+                <% } else { %>
+                    <a href="/auth/login" class="button-link">
+                        <button class="auth-button login">Login</button>
+                    </a>
+                    <a href="/auth/signup" class="button-link">
+                        <button class="auth-button signup">Sign Up</button>
+                    </a>
+                <% } %>
+                
+            </div>
+        </div>
+    </header>
+</body>
+
+</html>

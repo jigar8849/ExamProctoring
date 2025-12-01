@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Start Exam</title>
+    <link rel="stylesheet" href="/css/start-exam.css" />
+  </head>
+  <body>
+    <div class="start_exam_page_contianer">
+      <div class="left-container">
+        <div class="thesecureexam">
+          <div class="logo-title">
+            <p class="logo-title-up">Terzettoo</p>
+            <hr class="logo-divider" />
+            <p class="logo-title-down">
+              AI DRIVEN EXAM AND PROCTORING SOLUTION
+            </p>
+          </div>
+        </div>
+
+        <div class="question-panel-container">
+          <h2>Question Detail Panel</h2>
+          <div class="question-grid" id="questionGrid"></div>
+
+          <div class="legend">
+            <div><span class="legend-box marked"></span> Question Marked</div>
+            <div><span class="legend-box current"></span> Current Question</div>
+            <div>
+              <span class="legend-box not-marked"></span> Question Not Marked
+            </div>
+          </div>
+        </div>
+
+        <div class="extra-information">
+          <div class="time-duration">
+            Exam Duration: <span><%= exam.duration %> Minutes</span>
+          </div>
+          <div class="start-timing">
+            Start Time: <span><%= exam.start_time %></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-container">
+        <div class="icon-bar">
+          <div id="toggle-video">
+            <i class="fas fa-eye-slash"></i>
+          </div>
+          <div id="dark-mode-toggle"><i class="fas fa-moon"></i></div>
+          <div id="reset-font"><i class="fas fa-redo"></i></div>
+          <div>
+            <span id="decrease-font" style="font-size: large; cursor: pointer"
+              >A-</span
+            >
+            <span id="increase-font" style="font-size: larger; cursor: pointer"
+              >A+</span
+            >
+          </div>
+        </div>
+
+        <div class="date-time" id="dateTime"></div>
+
+        <div class="exam-name-container">
+          <h1 class="exam-name"><%= exam.examName %></h1>
+          <div class="exam-container">
+            <div class="question-section">
+              <div class="question-header">
+                <p id="question-number"></p>
+                <p id="time-remaining"></p>
+              </div>
+              <p id="question-text"></p>
+              <div class="options-container">
+                <div class="left-arrow" >
+                  <i class="fa-solid fa-angle-left" id="previous-button"></i>
+                </div>
+                <div class="options" id="options-container"></div>
+                <div class="right-arrow">
+                  <i class="fa-solid fa-angle-right" id="next-button"></i>
+                </div>
+              </div>
+            </div>
+            <div id="camera-preview">
+              <video id="webcam" autoplay playsinline muted></video>
+            </div>
+            <div class="next-btn">
+              <button
+                id="submit-button"
+                class="submit-btn"
+                style="display: none"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const questions = <%- JSON.stringify(exam.questions) %>;
+      const examId = "<%= exam._id %>";
+      let examDuration = <%= exam.duration %>;
+    </script>
+    <script src="/Js/start_exam.js"></script>
+  </body>
+</html>

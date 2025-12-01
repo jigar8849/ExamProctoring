@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exam Analysis - <%= submission.examId.examName %></title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/dashboard.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .card-header {
+      color: #000000;
+    }
+    .question-card .card-body {
+      background-color: #ffffff;
+    }
+    .btn-back {
+      border-radius: 50px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h2 class="mb-0">Exam Analysis - <%= submission.examId.examName %></h2>
+      </div>
+      <div class="card-body">
+        <div class="mb-4">
+          <h4 class="text-secondary">Exam Details</h4>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Instructor:</strong> <%= submission.examId.creatorId.username %></li>
+            <li class="list-group-item"><strong>Scheduled Date:</strong> <%= submission.examId.scheduleDate %></li>
+            <li class="list-group-item"><strong>Start Time:</strong> <%= submission.examId.scheduleTime %></li>
+            <li class="list-group-item"><strong>Duration:</strong> <%= submission.examId.duration %> minutes</li>
+          </ul>
+        </div>
+
+        <div class="mb-4">
+          <h4 class="text-secondary">Examinee Details</h4>
+          <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+              <img src="<%= submission.userId.photoUrl %>" alt="User Photo" class="rounded-circle img-fluid" style="max-width: 100px;">
+            </div>
+            <div class="col-md-10">
+              <p class="mb-1"><strong>Name:</strong> <%= submission.userId.username %></p>
+              <p class="mb-1"><strong>Email:</strong> <%= submission.userId.emailId %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h4 class="text-secondary">Submission Details</h4>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Submission Time:</strong> <%= submission.submissionTime.toLocaleString() %></li>
+            <% if (submission.videoPath) { %>
+              <li class="list-group-item">
+                <strong>Video Evidence:</strong> 
+                <a href="<%= submission.videoPath %>" target="_blank" class="text-decoration-none">View Video</a>
+              </li>
+            <% } %>
+            <% if (submission.audioPath) { %>
+              <li class="list-group-item">
+                <strong>Audio Evidence:</strong> 
+                <a href="<%= submission.audioPath %>" target="_blank" class="text-decoration-none">Listen</a>
+              </li>
+            <% } %>
+            <% if (submission.screenRecordingPath) { %>
+              <li class="list-group-item">
+                <strong>Screen Recording:</strong> 
+                <a href="<%= submission.screenRecordingPath %>" target="_blank" class="text-decoration-none">View Recording</a>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+
+        <div class="mb-4">
+          <h4 class="text-secondary">Exam Questions &amp; Responses</h4>
+          <% submission.answers.forEach((answer, index) => { %>
+            <div class="card mb-3 question-card">
+              <div class="card-body">
+                <h5 class="card-title">Question <%= index + 1 %></h5>
+                <p class="card-text"><strong>Q:</strong> <%= answer.questionText %></p>
+                <p class="card-text"><strong>Your Answer:</strong> <%= answer.submittedAnswer ? answer.submittedAnswer : "Not Answered" %></p>
+                <p class="card-text"><strong>Correct Answer:</strong> <%= answer.correctAnswer %></p>
+                <% if (answer.submittedAnswer && answer.submittedAnswer.trim().toLowerCase() === answer.correctAnswer.trim().toLowerCase()) { %>
+                  <div class="alert alert-success p-1">✔ Correct</div>
+                <% } else { %>
+                  <div class="alert alert-danger p-1">✘ Incorrect</div>
+                <% } %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <a href="/examinee/dashboard" class="btn btn-outline-primary btn-back" style="color: #fff;">Back to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

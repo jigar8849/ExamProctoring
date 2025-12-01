@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Dashboard - TheSecureExam</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .navbar-brand { font-weight: 600; }
+    .card-header { background-color: #007bff; color: #fff; }
+    .dashboard-title { margin-top: 20px; margin-bottom: 40px; }
+    .table th, .table td { vertical-align: middle; text-align: center; }
+    .status-pass { background-color: #28a745; color: white; padding: 5px 10px; border-radius: 5px; }
+    .status-fail { background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 5px; }
+    .status-pending { background-color: #ffc107; color: black; padding: 5px 10px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="dashboard-title text-center">
+    <h1>Welcome, <%= user.username %>!</h1>
+    <p class="lead">View your children's exam performance below.</p>
+  </div>
+
+  <% if (user.children && user.children.length > 0) { %>
+    <% user.children.forEach(child => { %>
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Child: <%= child.username %> (ID: <%= child._id %>)</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Age:</strong> <%= child.age || "N/A" %></p>
+          <p><strong>University ID:</strong> <%= child.universityId || "N/A" %></p>
+          <p><strong>Email:</strong> <%= child.emailId || "N/A" %></p>
+          <p><strong>Mobile Number:</strong> <%= child.mobileNumber || "N/A" %></p>
+
+          <% if (child.examHistory && child.examHistory.length > 0) { %>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead class="table-primary">
+                  <tr>
+                    <th>Exam Name</th>
+                    <th>Subject</th>
+                    <th>Duration (min)</th>
+                    <th>Submission Time</th>
+                    <th>Total Marks</th>
+                    <th>Passing Marks</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% child.examHistory.forEach(submission => { 
+                    let correctAnswers = submission.answers.filter(ans => ans.submittedAnswer === ans.correctAnswer).length;
+                    let totalQuestions = submission.examId.questions.length || 1; // Avoid division by zero
+                    let totalMarks = submission.examId.totalMarks || 100; // Default to 100 if missing
+                    let passingMarks = submission.examId.passingMarks || 50; // Default passing mark
+                    let score = (correctAnswers / totalQuestions) * totalMarks;
+                    let percentage = (score / totalMarks) * 100;
+                  %>
+                    <tr>
+                      <td><%= submission.examId.examName %></td>
+                      <td><%= submission.examId.subject %></td>
+                      <td><%= submission.examId.duration %></td>
+                      <td><%= new Date(submission.submissionTime).toLocaleString() %></td>
+                      <td><%= totalMarks %></td>
+                      <td><%= passingMarks %></td>
+                      <td><%= score.toFixed(2) %></td>
+                      <td><%= percentage.toFixed(2) %>%</td>
+                      <td>
+                        <% if (percentage >= passingMarks) { %>
+                          <span class="status-pass">Passed</span>
+                        <% } else if (submission.answers.length === 0) { %>
+                          <span class="status-pending">Not Attempted</span>
+                        <% } else { %>
+                          <span class="status-fail">Failed</span>
+                        <% } %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } else { %>
+            <p class="text-muted">No exam submissions found for this child.</p>
+          <% } %>
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <div class="alert alert-info">
+      <p>You have no children linked to your account. Please contact support if this is an error.</p>
+    </div>
+  <% } %>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
