@@ -10,11 +10,21 @@ module.exports = function (passport) {
       async (emailId, password, done) => {
         console.log("LocalStrategy authenticate called for email:", emailId);
         try {
+          if (!emailId || !password) {
+            console.log("Missing credentials: emailId or password not provided");
+            return done(null, false, { message: "Missing credentials" });
+          }
+
           const user = await User.findOne({ emailId });
           console.log("User lookup result:", user ? "found" : "not found");
           if (!user) {
             console.log("No user found with email:", emailId);
             return done(null, false, { message: "No user with that email" });
+          }
+
+          if (!user.password) {
+            console.log("User password not set for email:", emailId);
+            return done(null, false, { message: "Incorrect password" });
           }
 
           const isMatch = await bcrypt.compare(password, user.password);
