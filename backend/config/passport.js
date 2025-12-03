@@ -24,10 +24,16 @@ module.exports = function (passport) {
 
           if (!user.password) {
             console.log("User password not set for email:", emailId);
-            return done(null, false, { message: "Incorrect password" });
+            return done(null, false, { message: "Password not set. Please re-register." });
           }
 
-          const isMatch = await bcrypt.compare(password, user.password);
+          let isMatch;
+          try {
+            isMatch = await bcrypt.compare(password, user.password);
+          } catch (err) {
+            console.log("Error comparing password for email:", emailId, err.message);
+            return done(null, false, { message: "Incorrect password" });
+          }
           console.log("Password match result:", isMatch);
           if (!isMatch) {
             console.log("Password mismatch for user:", emailId);
