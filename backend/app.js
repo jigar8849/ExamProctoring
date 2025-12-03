@@ -65,18 +65,22 @@ app.use(
     },
   })
 );
+console.log("Session middleware configured. NODE_ENV:", process.env.NODE_ENV, "Cookie secure:", process.env.NODE_ENV === "production");
 
 app.use(flash());
 
 require("./config/passport")(passport);
+console.log("Passport middleware initialized");
 app.use(passport.initialize());
 app.use(passport.session());
+console.log("Passport session middleware initialized");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
+  console.log("Setting locals - req.user:", req.user ? req.user.emailId : null, "Session ID:", req.sessionID);
   res.locals.success = req.flash("success");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");

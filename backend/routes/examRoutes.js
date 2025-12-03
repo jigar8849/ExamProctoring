@@ -48,6 +48,7 @@ router.get("/examinee", (req, res) => {
 
 // Examiner Dashboard
 router.get("/examiner/dashboard", ensureAuthenticated, async (req, res) => {
+  console.log("Examiner dashboard route accessed. User:", req.user ? req.user.emailId : null, "Session ID:", req.sessionID);
   try {
     const user = await User.findById(req.user._id).populate("examHistory");
 
@@ -189,6 +190,7 @@ router.get(
 );
 
 router.get("/examinee/dashboard", ensureAuthenticated, async (req, res) => {
+  console.log("Examinee dashboard route accessed. User:", req.user ? req.user.emailId : null, "Session ID:", req.sessionID);
   if (!req.user) {
     return res
       .status(401)

@@ -137,8 +137,14 @@ router.get("/login", (req, res) => {
 
 // Handle user login
 router.post("/login", (req, res, next) => {
+  console.log("Login attempt received. Body:", req.body);
+  console.log("Session ID:", req.sessionID);
+  console.log("Is authenticated before login:", req.isAuthenticated());
+
   // Use passport's local strategy for authentication
   passport.authenticate("local", (err, user, info) => {
+    console.log("Passport authenticate callback. Err:", err, "User:", user ? user.emailId : null, "Info:", info);
+
     // Handle authentication errors
     if (err) {
       console.error("Authentication error: ", err);
@@ -148,32 +154,44 @@ router.post("/login", (req, res, next) => {
 
     // If no user is found, flash error and redirect back to login
     if (!user) {
+      console.log("No user found. Info message:", info.message);
       req.flash("error", info.message || "Invalid username or password.");
       return res.redirect("/auth/login");
     }
 
+    console.log("User found, attempting to log in. User ID:", user._id, "AccessType:", user.accessType);
+
     // Attempt to log in the user
     req.login(user, (loginErr) => {
+      console.log("req.login callback. LoginErr:", loginErr);
+      console.log("Is authenticated after login:", req.isAuthenticated());
+      console.log("req.user after login:", req.user ? req.user.emailId : null);
+
       if (loginErr) {
         console.error("Error during login: ", loginErr);
         req.flash("error", "Something went wrong during login.");
         return res.redirect("/auth/login");
       }
 
-      console.log("User successfully logged in: ", user);
+      console.log("User successfully logged in: ", user.emailId, "AccessType:", user.accessType);
 
       // Redirect the user based on their accessType (role)
       if (user.accessType === "examiner") {
+        console.log("Redirecting to examiner dashboard");
         return res.redirect("/examiner/dashboard");
       } else if (user.accessType === "examinee") {
+        console.log("Redirecting to examinee dashboard");
         return res.redirect("/examinee/dashboard");
       } else if (user.accessType === "admin") {
+        console.log("Redirecting to admin dashboard");
         return res.redirect("/admin/dashboard");
       } else if (user.accessType === "parent") {
+        console.log("Redirecting to parent dashboard");
         return res.redirect("/parent/dashboard");
       }
 
       // If no accessType is defined, log error and redirect to homepage
+      console.log("No valid accessType found, redirecting to home");
       req.flash("error", "Access type is undefined. Redirecting to home.");
       return res.redirect("/");
     });
