@@ -22,7 +22,6 @@ if (!process.env.MONGO_URI) {
 if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET not set in environment variables");
 }
-
 const authRoutes = require("./routes/authRoutes");
 const examRoutes = require("./routes/examRoutes");
 const aichatRoutes = require("./routes/aichatRoutes");
@@ -33,6 +32,8 @@ require("./models/Exam");
 require("./models/User");
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', 1); // Trust first proxy for secure cookies
 app.use(expressLayouts);
 
@@ -40,9 +41,6 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
 app.set("layout", "./layouts/boilerplate");
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../frontend/public")));
 app.use(uploadRouter);
@@ -74,10 +72,6 @@ console.log("Passport middleware initialized");
 app.use(passport.initialize());
 app.use(passport.session());
 console.log("Passport session middleware initialized");
-
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
   console.log("Setting locals - req.user:", req.user ? req.user.emailId : null, "Session ID:", req.sessionID);
