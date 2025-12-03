@@ -33,6 +33,7 @@ require("./models/Exam");
 require("./models/User");
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy for secure cookies
 app.use(expressLayouts);
 
 const http = require('http').createServer(app);
