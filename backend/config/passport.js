@@ -1,5 +1,4 @@
 const LocalStrategy = require("passport-local").Strategy;
-const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
 module.exports = function (passport) {
@@ -22,26 +21,23 @@ module.exports = function (passport) {
             return done(null, false, { message: "No user with that email" });
           }
 
-          if (!user.password) {
-            console.log("User password not set for email:", emailId);
-            return done(null, false, { message: "Password not set. Please re-register." });
-          }
-
-          let isMatch;
-          try {
-            isMatch = await bcrypt.compare(password, user.password);
-          } catch (err) {
-            console.log("Error comparing password for email:", emailId, err.message);
-            return done(null, false, { message: "Incorrect password" });
-          }
-          console.log("Password match result:", isMatch);
-          if (!isMatch) {
-            console.log("Password mismatch for user:", emailId);
-            return done(null, false, { message: "Incorrect password" });
-          }
-
-          console.log("Authentication successful for user:", emailId);
-          return done(null, user);
+          // Use passport-local-mongoose authenticate method for consistency
+          user.authenticate(password, (err, authenticatedUser, passwordErr) => {
+            if (err) {
+              console.error("Authentication error:", err);
+              return done(err);
+            }
+            if (passwordErr) {
+              console.log("Password error:", passwordErr.message);
+              return done(null, false, { message: passwordErr.message });
+            }
+            if (!authenticatedUser) {
+              console.log("Authentication failed for user:", emailId);
+              return done(null, false, { message: "Incorrect password" });
+            }
+            console.log("Authentication successful for user:", emailId);
+            return done(null, authenticatedUser);
+          });
         } catch (err) {
           console.error("Error in LocalStrategy:", err);
           return done(err);
